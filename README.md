@@ -28,9 +28,11 @@ You can publish the config file with:
 php artisan vendor:publish --tag="token-vault-config"
 ```
 
-## Usage
+Here’s the updated **Usage** guide for your `TokenVault` package, incorporating the `Provider` enum and clarifying token types:
 
-### Setup Model
+## ✅ Usage
+
+### 🧩 Setup Model
 
 To allow a model (e.g. `User`) to have tokens:
 
@@ -43,20 +45,23 @@ class User extends Authenticatable
 }
 ```
 
-### Storing a Token
+### 🔐 Storing a Token
 
 ```php
+use CleaniqueCoders\TokenVault\Enums\Provider;
+
 $user = User::find(1);
 
 $user->tokens()->create([
-    'type' => 'github',
-    'token' => 'ghp_xxxx', // will be encrypted automatically
+    'provider' => Provider::GitHub, // enum usage
+    'type' => 'access_token',       // e.g., access_token, refresh_token
+    'token' => 'ghp_xxxx',          // will be encrypted automatically
     'meta' => ['note' => 'GitHub Deploy Token'],
     'expires_at' => now()->addDays(30),
 ]);
 ```
 
-### Decrypting a Token (when needed)
+### 🔓 Decrypting a Token (when needed)
 
 ```php
 $token = $user->tokens()->first();
@@ -64,26 +69,33 @@ $token = $user->tokens()->first();
 $plainToken = $token->getDecryptedToken();
 ```
 
-> Only use this when absolutely necessary — avoid exposing raw tokens.
+> ⚠️ Only use this when absolutely necessary — avoid exposing raw tokens.
 
-### Token Masking (Safe Display)
+### 👁️ Token Masking (Safe Display)
 
 ```php
 $token->getMaskedToken(); // e.g., "ghp_****abcd"
 ```
 
-Use this for audit trails or UI displays.
+Use this for logs, audit trails, or safe UI display.
 
-### Retrieve Tokens by Type
+### 📂 Retrieve Tokens by Provider
 
 ```php
-$githubToken = $user->tokens()->where('type', 'github')->latest()->first();
+use CleaniqueCoders\TokenVault\Enums\Provider;
+
+$githubToken = $user->tokens()
+    ->where('provider', Provider::GitHub)
+    ->latest()
+    ->first();
 ```
 
-### Cleaning Expired Tokens
+### 🧹 Cleaning Expired Tokens
 
 ```php
-$user->tokens()->where('expires_at', '<', now())->delete();
+$user->tokens()
+    ->where('expires_at', '<', now())
+    ->delete();
 ```
 
 ## Encryption Drivers (Optional)

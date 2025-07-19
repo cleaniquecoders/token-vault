@@ -22,6 +22,7 @@ class TokenVault extends Model
     ];
 
     protected $casts = [
+        'provider' => \CleaniqueCoders\TokenVault\Enums\Provider::class,
         'meta' => 'array',
         'expires_at' => 'datetime',
     ];
