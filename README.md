@@ -1,19 +1,11 @@
-# A secure and extensible token manager for Laravel, designed to store, encrypt, and validate tokens or API keys from services like GitHub, GitLab, etc.
+# Laravel Token Vault
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cleaniquecoders/token-vault.svg?style=flat-square)](https://packagist.org/packages/cleaniquecoders/token-vault)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/cleaniquecoders/token-vault/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/cleaniquecoders/token-vault/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/cleaniquecoders/token-vault/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/cleaniquecoders/token-vault/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/cleaniquecoders/token-vault.svg?style=flat-square)](https://packagist.org/packages/cleaniquecoders/token-vault)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/token-vault.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/token-vault)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+A secure and extensible token manager for Laravel, designed to store, encrypt, and decrypt tokens or API keys. This is useful when you are building an application that require to store sensitive information.
 
 ## Installation
 
@@ -36,25 +28,73 @@ You can publish the config file with:
 php artisan vendor:publish --tag="token-vault-config"
 ```
 
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="token-vault-views"
-```
-
 ## Usage
 
+### Setup Model
+
+To allow a model (e.g. `User`) to have tokens:
+
 ```php
-$tokenVault = new CleaniqueCoders\TokenVault();
-echo $tokenVault->echoPhrase('Hello, CleaniqueCoders!');
+use CleaniqueCoders\TokenVault\Traits\InteractsWithTokenVault;
+
+class User extends Authenticatable
+{
+    use InteractsWithTokenVault;
+}
 ```
+
+### Storing a Token
+
+```php
+$user = User::find(1);
+
+$user->tokens()->create([
+    'type' => 'github',
+    'token' => 'ghp_xxxx', // will be encrypted automatically
+    'meta' => ['note' => 'GitHub Deploy Token'],
+    'expires_at' => now()->addDays(30),
+]);
+```
+
+### Decrypting a Token (when needed)
+
+```php
+$token = $user->tokens()->first();
+
+$plainToken = $token->getDecryptedToken();
+```
+
+> Only use this when absolutely necessary — avoid exposing raw tokens.
+
+### Token Masking (Safe Display)
+
+```php
+$token->getMaskedToken(); // e.g., "ghp_****abcd"
+```
+
+Use this for audit trails or UI displays.
+
+### Retrieve Tokens by Type
+
+```php
+$githubToken = $user->tokens()->where('type', 'github')->latest()->first();
+```
+
+### Cleaning Expired Tokens
+
+```php
+$user->tokens()->where('expires_at', '<', now())->delete();
+```
+
+## Encryption Drivers (Optional)
+
+To use a custom encryption method:
+
+```php
+'token-vault.encryptor' => \App\Drivers\OpenSslEncryptor::class,
+```
+
+And the class need to implements the `\CleaniqueCoders\TokenVault\Contracts\Encryptor` interface.
 
 ## Testing
 
