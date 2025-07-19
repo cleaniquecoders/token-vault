@@ -2,7 +2,7 @@
 
 namespace CleaniqueCoders\TokenVault;
 
-use CleaniqueCoders\TokenVault\Commands\TokenVaultCommand;
+use Exception;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -18,8 +18,25 @@ class TokenVaultServiceProvider extends PackageServiceProvider
         $package
             ->name('token-vault')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_token_vault_table')
-            ->hasCommand(TokenVaultCommand::class);
+            ->hasMigration('create_token_vault_table');
+    }
+
+    public function packageRegistered()
+    {
+        $this->app->singleton('token-vault.encryptor', function () {
+            $class = config('token-vault.encryptor');
+
+            if (! class_exists($class)) {
+                throw new Exception("$class not found");
+            }
+
+            $instance = new $class;
+
+            if (! ($instance instanceof \CleaniqueCoders\TokenVault\Contracts\Encryptor)) {
+                throw new Exception("$class must implement \CleaniqueCoders\TokenVault\Contracts\Encryptor interface");
+            }
+
+            return $instance;
+        });
     }
 }

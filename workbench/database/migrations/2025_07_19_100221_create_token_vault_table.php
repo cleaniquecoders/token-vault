@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('token_vaults', function (Blueprint $table) {
+        Schema::create('token_vaules', function (Blueprint $table) {
             $table->id();
             $table->uuid()->index();
 
