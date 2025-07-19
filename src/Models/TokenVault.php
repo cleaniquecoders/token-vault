@@ -3,18 +3,18 @@
 namespace CleaniqueCoders\TokenVault\Models;
 
 use CleaniqueCoders\TokenVault\Facades\Encryptor;
+use CleaniqueCoders\Traitify\Concerns\InteractsWithMeta;
 use CleaniqueCoders\Traitify\Concerns\InteractsWithUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 
 class TokenVault extends Model
 {
-    use HasFactory, InteractsWithUuid;
+    use HasFactory, InteractsWithMeta, InteractsWithUuid;
 
     protected $fillable = [
+        'provider',
         'type',
         'token',
         'meta',
@@ -56,24 +56,6 @@ class TokenVault extends Model
     public function isExpired(): bool
     {
         return $this->expires_at?->isPast() ?? false;
-    }
-
-    /**
-     * Check if the token is valid using its registered validator.
-     */
-    public function isValid(): bool
-    {
-        $cacheKey = "token-vault.validity.{$this->id}";
-
-        return Cache::remember($cacheKey, config('token-vault.cache_ttl', 3600), function () {
-            $validator = config("token-vault.validators.{$this->type}");
-
-            if (! $validator) {
-                return true; // No validator, assume valid
-            }
-
-            return App::make($validator)->validate($this);
-        });
     }
 
     /**

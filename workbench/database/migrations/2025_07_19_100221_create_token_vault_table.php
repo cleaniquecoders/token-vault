@@ -13,6 +13,7 @@ return new class extends Migration
             $table->uuid()->index();
 
             $table->morphs('tokenable');
+            $table->string('provider');
             $table->string('type');
             $table->text('token');
             $table->json('meta')->nullable();
