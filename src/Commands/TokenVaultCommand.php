@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace CleaniqueCoders\TokenVault\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class TokenVaultCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'token-vault';
 
     public $description = 'My command';
 
