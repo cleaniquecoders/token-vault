@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\TokenVault\Tests;
 
+use CleaniqueCoders\TokenVault\TokenVaultServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use CleaniqueCoders\TokenVault\TokenVaultServiceProvider;
 
 class TestCase extends Orchestra
 {

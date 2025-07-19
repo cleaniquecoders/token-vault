@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\TokenVault;
 
+use CleaniqueCoders\TokenVault\Commands\TokenVaultCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CleaniqueCoders\TokenVault\Commands\TokenVaultCommand;
 
 class TokenVaultServiceProvider extends PackageServiceProvider
 {
