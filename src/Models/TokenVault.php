@@ -21,11 +21,17 @@ class TokenVault extends Model
         'expires_at',
     ];
 
-    protected $casts = [
-        'provider' => \CleaniqueCoders\TokenVault\Enums\Provider::class,
-        'meta' => 'array',
-        'expires_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'provider' => config(
+                'token-vault.provider',
+                \CleaniqueCoders\TokenVault\Enums\Provider::class
+            ),
+            'meta' => 'array',
+            'expires_at' => 'datetime',
+        ];
+    }
 
     /**
      * Polymorphic relationship to tokenable model.

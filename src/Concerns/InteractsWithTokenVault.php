@@ -9,6 +9,9 @@ trait InteractsWithTokenVault
 {
     public function tokens(): MorphMany
     {
-        return $this->morphMany(TokenVault::class, 'tokenable');
+        return $this->morphMany(
+            config('token-vault.model', TokenVault::class),
+            'tokenable'
+        );
     }
 }
