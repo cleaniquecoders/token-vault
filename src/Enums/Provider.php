@@ -18,7 +18,7 @@ enum Provider: string implements Contract
     case AWS = 'aws';
     case Sentry = 'sentry';
     case Vercel = 'vercel';
-    case Kong = 'Kong';
+    case Kong = 'kong';
 
     public function label(): string
     {
