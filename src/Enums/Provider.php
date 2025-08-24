@@ -18,6 +18,7 @@ enum Provider: string implements Contract
     case AWS = 'aws';
     case Sentry = 'sentry';
     case Vercel = 'vercel';
+    case Kong = 'Kong';
 
     public function label(): string
     {
@@ -31,6 +32,7 @@ enum Provider: string implements Contract
             self::AWS => __('AWS'),
             self::Sentry => __('Sentry'),
             self::Vercel => __('Vercel'),
+            self::Kong => __('Kong'),
         };
     }
 
@@ -46,6 +48,7 @@ enum Provider: string implements Contract
             self::AWS => __('Amazon Web Services - cloud infrastructure provider.'),
             self::Sentry => __('Sentry helps monitor and fix crashes in real time.'),
             self::Vercel => __('Vercel is a platform for frontend frameworks and static sites.'),
+            self::Kong => __('Kong Gateway is a lightweight, fast, and flexible cloud-native API gateway and reverse proxy.'),
         };
     }
 }

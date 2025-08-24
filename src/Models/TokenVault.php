@@ -28,6 +28,10 @@ class TokenVault extends Model
                 'token-vault.provider',
                 \CleaniqueCoders\TokenVault\Enums\Provider::class
             ),
+            'type' => config(
+                'token-vault.type',
+                \CleaniqueCoders\TokenVault\Enums\Type::class
+            ),
             'meta' => 'array',
             'expires_at' => 'datetime',
         ];
